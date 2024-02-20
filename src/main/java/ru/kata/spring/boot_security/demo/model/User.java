@@ -21,7 +21,13 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "age")
+    private int age;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Role> roles;
 
     public User() {
@@ -30,6 +36,14 @@ public class User implements UserDetails {
     public User(String username, String password, List<Role> roles) {
         this.username = username;
         this.password = password;
+        this.roles = roles;
+    }
+
+    public User(String username, String password, String email, int age, List<Role> roles) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.age = age;
         this.roles = roles;
     }
 
@@ -63,6 +77,22 @@ public class User implements UserDetails {
 
     public void setRoles(List<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @Override

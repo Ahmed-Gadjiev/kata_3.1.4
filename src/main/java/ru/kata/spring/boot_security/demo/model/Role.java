@@ -22,7 +22,7 @@ public class Role implements GrantedAuthority {
     }
 
     public Role(String name) {
-        this.name = name;
+        this.name = "ROLE_" + name;
     }
 
     public Long getId() {
@@ -38,7 +38,7 @@ public class Role implements GrantedAuthority {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = "ROLE_" + name;
     }
 
     @Override
