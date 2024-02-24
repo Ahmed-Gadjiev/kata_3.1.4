@@ -11,19 +11,22 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.util.List;
+import java.util.Set;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
     private final UserService userService;
+    private final RoleService roleService;
 
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, @Lazy UserService userService) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, @Lazy UserService userService, RoleService roleRepository) {
         this.successUserHandler = successUserHandler;
         this.userService = userService;
+        this.roleService = roleRepository;
     }
 
     @Override
@@ -55,12 +58,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 
-        userService.save(new User("User", "100", "user@mail.ru", 18,
-                List.of(new Role("USER"))
-        ));
-        userService.save(new User("Admin", "100",
-                List.of(new Role("USER"), new Role("ADMIN"))
-        ));
+        roleService.save(new Role("USER"));
+        roleService.save(new Role("ADMIN"));
+
+        User user = new User("User", "123", "user@mail.ru", 18);
+        User admin = new User("Admin", "123", "admin@mail.ru", 18);
+        User user2 = new User("qwerty", "123", "qwerty@mail.ru", 18);
+
+        Role roleUser = roleService.getByRoleName("USER");
+        Role roleAdmin = roleService.getByRoleName("ADMIN");
+
+        user.setRoles(Set.of(roleUser));
+        admin.setRoles(Set.of(roleUser, roleAdmin));
+        user2.setRoles(Set.of(roleUser));
+
+        userService.save(user);
+        userService.save(admin);
+        userService.save(user2);
 
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         authenticationProvider.setUserDetailsService(userService);

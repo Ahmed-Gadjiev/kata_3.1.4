@@ -7,13 +7,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+
 @Repository
 public class UserDaoImpl implements UserDao {
     @PersistenceContext
     EntityManager em;
 
     @Override
-    public void add(User user) {
+    public void save(User user) {
         em.persist(user);
     }
 
@@ -27,9 +28,13 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getByUsername(String username) {
-        return em.createQuery("SELECT u FROM User u WHERE u.username = :name", User.class)
+        User name = em.createQuery("SELECT u FROM User u WHERE u.username = :name", User.class)
                 .setParameter("name", username)
                 .getSingleResult();
+
+        System.out.println(name);
+
+        return name;
     }
 
     @Override

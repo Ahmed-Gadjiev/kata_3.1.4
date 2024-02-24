@@ -27,10 +27,8 @@
     <br><br>
     <label>Роль: </label>
     <select name="role">
-        <option th:value="${USER}" >USER</option>
-        <option th:value="${ADMIN}">ADMIN</option>
+        <option th:each="role : ${roles}" th:text="${role.getName()}"></option>
     </select>
-    // я пытался реализовать возможность выдавать роль пользователю при регистрации
 
     <br><br/>
 

@@ -1,11 +1,17 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import com.sun.istack.NotNull;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,36 +21,49 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
+    @NotNull
+    @Column(name = "username", length = 50, unique = true)
     private String username;
 
+    @NotNull
     @Column(name = "password")
     private String password;
 
+    @Email
     @Column(name = "email")
     private String email;
 
-    @Column(name = "age")
+    @Positive
+    @Column(name = "age", length = 150)
     private int age;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Role> roles;
+    @Fetch(FetchMode.JOIN)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password, List<Role> roles) {
+    public User(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
     }
 
-    public User(String username, String password, String email, int age, List<Role> roles) {
+    public User(String username, String password, String email, int age, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.age = age;
         this.roles = roles;
+    }
+
+    public User(String username, String password, String email, int age) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.age = age;
     }
 
     public Long getId() {
@@ -71,11 +90,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
