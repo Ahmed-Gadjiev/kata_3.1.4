@@ -36,7 +36,6 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void save(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
         userDao.save(user);
     }
 
@@ -47,19 +46,7 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void update(Long id, User user) {
-        User oldUser = userDao.getById(id);
-
-
-//        oldUser.setId(user.getId());
-//        oldUser.setRoles(user.getRoles());
-//        oldUser.setUsername(user.getUsername());
-//
-//        oldUser.setPassword(
-//                bCryptPasswordEncoder.encode(user.getPassword())
-//        );
-
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-
         userDao.update(id, user);
     }
 

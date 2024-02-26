@@ -10,8 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Positive;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,7 +36,8 @@ public class User implements UserDetails {
     private String email;
 
     @Positive
-    @Column(name = "age", length = 150)
+    @Max(120)
+    @Column(name = "age")
     private int age;
 
     @Fetch(FetchMode.JOIN)

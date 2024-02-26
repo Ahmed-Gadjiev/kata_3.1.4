@@ -14,6 +14,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
+import java.util.List;
 import java.util.Set;
 
 @Configuration
@@ -34,10 +35,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                .formLogin()
+                .successHandler(successUserHandler)
                 .permitAll()
                 .and()
                 .logout()
@@ -65,8 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         User admin = new User("Admin", "123", "admin@mail.ru", 18);
         User user2 = new User("qwerty", "123", "qwerty@mail.ru", 18);
 
-        Role roleUser = roleService.getByRoleName("USER");
-        Role roleAdmin = roleService.getByRoleName("ADMIN");
+        Role roleUser = roleService.getByRoleName("ROLE_USER");
+        Role roleAdmin = roleService.getByRoleName("ROLE_ADMIN");
 
         user.setRoles(Set.of(roleUser));
         admin.setRoles(Set.of(roleUser, roleAdmin));

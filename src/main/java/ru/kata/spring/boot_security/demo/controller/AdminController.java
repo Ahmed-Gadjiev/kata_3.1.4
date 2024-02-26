@@ -9,6 +9,9 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,9 +27,18 @@ public class AdminController {
     }
 
     @GetMapping("/")
-    public String allUsers(ModelMap model) {
+    public String allUsers(ModelMap model, Principal principal) {
+        User authUser = userService.getByUsername(principal.getName());
+        System.out.println(authUser);
+        User newUser = new User();
+
         List<User> users = userService.findAll();
+        List<Role> roles = roleService.getAll();
+
         model.addAttribute("users", users);
+        model.addAttribute("user", authUser);
+        model.addAttribute("newUser", newUser);
+        model.addAttribute("roles", roles);
         return "index";
     }
 
@@ -41,22 +53,51 @@ public class AdminController {
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") @Valid User user, @Valid String role) {
+    public String saveUser(@ModelAttribute("user") @Valid User user, @Valid String role, @Valid String newRoles) {
+//        if (user.getId() != null) {
+//            System.out.println("update");
+//            System.out.println(user.getRoles());
+//
+//            String[] rolesStr = newRoles.split(",");
+//            Set<Role> roles = new HashSet<>();
+//
+//            for (String s : rolesStr) {
+//                roles.add(roleService.getByRoleName(s));
+//            }
+//
+//            user.setRoles(roles);
+//
+//            userService.update(user.getId(), user);
+//        } else {
+//            System.out.println("new");
+//            System.out.println(user.getUsername());
+//
+//            String[] rolesStr = role.split(",");
+//            Set<Role> roles = new HashSet<>();
+//
+//            for (String s : rolesStr) {
+//                roles.add(roleService.getByRoleName(s));
+//            }
+//
+//            user.setRoles(roles);
+//            userService.save(user);
+//        }
+//
+//        return "redirect:/admin/";
+
+        String[] rolesStr = role.split(",");
+        Set<Role> roles = new HashSet<>();
+
+        for (String s : rolesStr) {
+            roles.add(roleService.getByRoleName(s));
+        }
+
+        user.setRoles(roles);
+
+
         if (user.getId() != null) {
             userService.update(user.getId(), user);
         } else {
-
-            if (role.equals("ROLE_ADMIN")){
-                user.setRoles(Set.of(
-                        roleService.getByRoleName("ADMIN"),
-                        roleService.getByRoleName("USER")
-                ));
-            } else {
-                user.setRoles(Set.of(
-                        roleService.getByRoleName("USER")
-                ));
-            }
-
             userService.save(user);
         }
 
