@@ -45,14 +45,6 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void update(Long id, User newUser) {
-//        User user = getById(id);
-//        user.setUsername(newUser.getUsername());
-//        user.setEmail(newUser.getEmail());
-//        user.setAge(newUser.getAge());
-//        user.setPassword(newUser.getPassword());
-//
-//        user.setRoles(newUser.getRoles());
-
         Set<Role> roles = new HashSet<>();
 
         for (Role r : newUser.getRoles()) {

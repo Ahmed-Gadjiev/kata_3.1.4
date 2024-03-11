@@ -29,7 +29,7 @@ public class UserService implements UserDetailsService {
         return userDao.getById(id);
     }
 
-    public List<User> findAll() {
+    public List<User> getAll() {
         return userDao.getAll();
     }
 

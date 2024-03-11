@@ -23,7 +23,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<Role> getAll() {
-        return em.createQuery("SELECT r FROM Role r", Role.class).getResultList();
+        return em.createQuery("SELECT new ru.kata.spring.boot_security.demo.model.Role(r.id, r.name) FROM Role r", Role.class).getResultList();
     }
 
     @Override
