@@ -23,7 +23,5 @@ public class SuccessUserHandler implements AuthenticationSuccessHandler {
         } else {
             httpServletResponse.sendRedirect("/");
         }
-
-        System.out.println(roles);
     }
 }

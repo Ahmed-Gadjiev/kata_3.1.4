@@ -1,20 +1,17 @@
 package ru.kata.spring.boot_security.demo.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
@@ -25,33 +22,8 @@ public class AdminController {
         this.roleService = roleDao;
     }
 
-    @GetMapping("/")
-    public String allUsers(ModelMap model, Principal principal) {
-        User authUser = userService.getByUsername(principal.getName());
-        User newUser = new User();
-
-        List<User> users = userService.getAll();
-        List<Role> roles = roleService.getAll();
-
-//        model.addAttribute("users", users);
-        model.addAttribute("user", authUser);
-        model.addAttribute("newUser", newUser);
-//        model.addAttribute("roles", roles);
-        return "admin";
-    }
-
-//    @GetMapping("/addNewUser")
-//    public String addNewUser(ModelMap model) {
-//        User user = new User();
-//        List<Role> roles = roleService.getAll();
-//        model.addAttribute("roles", roles);
-//        model.addAttribute("user", user);
-//
-//        return "user-info";
-//    }
-
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") @Valid User user, @Valid String role, @Valid String newRoles) {
+    public RedirectView saveUser(@ModelAttribute("user") @Valid User user, @Valid String role, @Valid String newRoles) {
         String[] rolesStr = role.split(",");
         Set<Role> roles = new HashSet<>();
 
@@ -67,23 +39,12 @@ public class AdminController {
             userService.save(user);
         }
 
-        return "redirect:/admin/";
+        return new RedirectView("http://localhost:8080/admin/");
     }
 
     @PostMapping(value = "/deleteUser", params = {"userId"})
-    public String deleteUser(@RequestParam("userId") long id) {
+    public RedirectView deleteUser(@RequestParam("userId") long id) {
         userService.delete(id);
-
-        return "redirect:/admin/";
-    }
-
-    @PostMapping(value = "/updateUser", params = {"userId"})
-    public String updateUser(@RequestParam("userId") long id, ModelMap model) {
-        User user = userService.getById(id);
-        List<Role> roles = roleService.getAll();
-        model.addAttribute("user", user);
-        model.addAttribute("roles", roles);
-
-        return "user-info";
+        return new RedirectView("http://localhost:8080/admin/");
     }
 }

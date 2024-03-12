@@ -35,28 +35,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/admin/**").hasAnyRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .successHandler(successUserHandler)
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+            .csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+            .antMatchers("/admin/**").hasAnyRole("ADMIN")
+            .anyRequest().authenticated()
+            .and()
+            .formLogin()
+            .successHandler(successUserHandler)
+            .permitAll()
+            .and()
+            .logout()
+            .permitAll();
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(daoAuthenticationProvider());
     }
-
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.httpFirewall(new DefaultHttpFirewall());
-//    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

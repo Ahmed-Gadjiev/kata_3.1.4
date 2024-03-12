@@ -11,12 +11,7 @@
 <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
     <div class="container-fluid">
         <div class="collapse navbar-collapse">
-            <div>
-                <span class="nav-text text-light" th:text="(${user.getEmail()})+ ' '">admin</span>
-                <span class="nav-text  text-light">with roles:</span>
-                <span th:each=" role :${user.getAuthorities()}">
-                    <span class="nav-text text-light" th:text="' ' + (${role.name})">role</span>
-                </span>
+            <div id="logo">
             </div>
         </div>
         <a class="nav-link text-light" th:href="@{/logout}">Logout</a>
@@ -27,13 +22,11 @@
     <div class="nav col-md-2 nav-pills flex-column" id="v-pills-tab" role="tablist" aria-orientation="vertical">
         <br>
         <a class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home"
-           type="button" role="tab" aria-controls="v-pills-home" aria-selected="false"
-           sec:authorize="hasRole('ADMIN')">
+           type="button" role="tab" aria-controls="v-pills-home" aria-selected="false">
             Admin
         </a>
 
-        <a th:classappend="'nav-link ' + (${#authorization.expression('hasRole(''ADMIN'')')} ? '' : 'active')"
-           id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile"
+        <a class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile"
            type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
             User
         </a>
@@ -41,7 +34,7 @@
 
     <div class="tab-content w-100" id="v-pills-tabContent">
         <div class="tab-pane show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab"
-             tabindex="0" sec:authorize="hasRole('ADMIN')">
+             tabindex="0">
 
             <div class="col px-5">
 
@@ -80,7 +73,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="table-users-body">
-                                        
+
                                     </tbody>
                                 </table>
                             </div>
@@ -96,51 +89,53 @@
                         <h3 class="card-header border p-3">Add new user</h3>
                         <div class="card border">
 
-                            <form align="center" th:method="POST" th:action="@{/admin/saveUser}" th:object="${newUser}">
-                                <br>
+                            <form align="center" method="POST"
+                                  action="http://localhost:8080/admin/saveUser">
+                                <input type="hidden" name="_csrf" value="77e94014-5492-4cf5-a81f-a81b0a598f36">
+
                                 <div class="row justify-content-md-center">
+                                    <p></p> 
                                     <div class="col-md-4 align-self-center">
-                                        <label for="username" class="form-label ">Username</label>
-                                        <input type="text" class="form-control" th:field="*{username}"
-                                               id="username"/>
-                                    </div>
-                                    <p></p>
-                                    <div class="col-md-4 align-self-center">
-                                        <label for="age" class="form-label">Age: </label>
-                                        <input type="number" class="form-control" th:field="*{age}" id="age"/>
+                                        <p class="form-label">Username</p>
+                                        <input type="text" class="form-control"
+                                               name="username"/>
                                     </div>
                                     <p></p>
 
                                     <div class="col-md-4 align-self-center">
-                                        <label for="email" class="form-label ">Email: </label>
-                                        <input type="email" class="form-control" th:field="*{email}" id="email"/>
+                                        <p class="form-label">Age</p>
+                                        <input type="number" class="form-control"
+                                               name="age"/>
                                     </div>
                                     <p></p>
 
                                     <div class="col-md-4 align-self-center">
-                                        <label for="password" class="form-label ">Password: </label>
-                                        <input type="password" class="form-control" th:field="*{password}"
-                                               id="password"/>
+                                        <p class="form-label">Email </p>
+                                        <input type="email" class="form-control"
+                                               name="email"/>
+                                    </div>
+                                    <p></p>
+
+                                    <div class="col-md-4 align-self-center">
+                                        <p class="form-label">Password</p>
+                                        <input type="password" class="form-control"
+                                               name="password"/>
                                     </div>
                                     <p></p>
 
                                     <div class="form-group col-md-4">
-                                        <label for="editRoles" class="col-form-label ">
-                                            Role
-                                        </label>
+                                        <p class="form-label">Roles</p>
+
                                         <select multiple class="form-control" id="editRoles" name="role">
-                                            
+
                                         </select>
                                     </div>
                                 </div>
                                 <p></p>
-
                                 <button type="submit" class="btn btn-success btn-lg">Add new user</button>
-
                             </form>
                             <p></p>
                         </div>
-
 
                     </div>
 
@@ -149,7 +144,7 @@
             </div>
         </div>
 
-        <div th:classappend="'tab-pane ' + (${#authorization.expression('hasRole(''ADMIN'')')} ? '' : 'active show')"
+        <div class="tab-pane"
              id="v-pills-profile" role="tabpanel"
              aria-labelledby="v-pills-profile-tab">
 
@@ -172,7 +167,7 @@
                             </tr>
                             </thead>
                             <tbody id="user-information-page">
-                                
+
                             </tbody>
                         </table>
                     </div>
