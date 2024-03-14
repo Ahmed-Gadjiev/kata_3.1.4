@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -23,15 +24,17 @@ public class AdminController {
     }
 
     @PostMapping("/saveUser")
-    public RedirectView saveUser(@ModelAttribute("user") @Valid User user, @Valid String role, @Valid String newRoles) {
-        String[] rolesStr = role.split(",");
-        Set<Role> roles = new HashSet<>();
+    public List<User> saveUser(@RequestBody @Valid User user, @Valid String role, @Valid String newRoles) {
+//        System.out.println(role);
+//
+//        String[] rolesStr = role.split(",");
+//        Set<Role> roles = new HashSet<>();
+//
+//        for (String s : rolesStr) {
+//            roles.add(roleService.getByRoleName(s));
+//        }
 
-        for (String s : rolesStr) {
-            roles.add(roleService.getByRoleName(s));
-        }
-
-        user.setRoles(roles);
+//        user.setRoles(roles);
 
         if (user.getId() != null) {
             userService.update(user.getId(), user);
@@ -39,12 +42,13 @@ public class AdminController {
             userService.save(user);
         }
 
-        return new RedirectView("http://localhost:8080/admin/");
+        return userService.getAll() ;
     }
 
     @PostMapping(value = "/deleteUser", params = {"userId"})
-    public RedirectView deleteUser(@RequestParam("userId") long id) {
+    public List<User> deleteUser(@RequestParam("userId") long id) {
+        System.out.println(id );
         userService.delete(id);
-        return new RedirectView("http://localhost:8080/admin/");
+        return userService.getAll();
     }
 }

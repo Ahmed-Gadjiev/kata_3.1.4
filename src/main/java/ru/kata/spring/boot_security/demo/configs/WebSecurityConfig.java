@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.firewall.DefaultHttpFirewall;
 import ru.kata.spring.boot_security.demo.model.Role;
@@ -70,8 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         User admin = new User("Admin", "123", "admin@mail.ru", 18);
         User user2 = new User("qwerty", "123", "qwerty@mail.ru", 18);
 
-        Role roleUser = roleService.getByRoleName("ROLE_USER");
-        Role roleAdmin = roleService.getByRoleName("ROLE_ADMIN");
+        Role roleUser = roleService.getByRoleName("USER");
+        Role roleAdmin = roleService.getByRoleName("ADMIN");
 
         user.setRoles(Set.of(roleUser));
         admin.setRoles(Set.of(roleUser, roleAdmin));
@@ -87,5 +89,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationProvider;
     }
 
-
+    @Bean
+    public GrantedAuthoritiesMapper authoritiesMapper() {
+        SimpleAuthorityMapper authoritiesMapper = new SimpleAuthorityMapper();
+        authoritiesMapper.setPrefix("");
+        return authoritiesMapper;
+    }
 }

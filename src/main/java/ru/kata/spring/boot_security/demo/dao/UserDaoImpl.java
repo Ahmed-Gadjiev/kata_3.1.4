@@ -25,6 +25,14 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void save(User user) {
+        Set<Role> roles = new HashSet<>();
+
+        for (Role r : user.getRoles()) {
+            roles.add(roleService.getByRoleName(r.getName()));
+        }
+
+        user.setRoles(roles);
+
         em.persist(user);
     }
 
