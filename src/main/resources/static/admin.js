@@ -171,7 +171,7 @@
             </td>
     
             <td>
-                <input type="text" value=${user.id} class="userId${i}" hidden/>
+                <input type="text" value=${user.id} id="userId${user.id}" hidden/>
                 <button class="btn btn-danger deleteUser">
                   Delete
                 </button>
@@ -193,7 +193,7 @@
 
     for (i = 0; i < deleteUser.length; i++) {
       deleteUser[i].addEventListener("click", (event) => {
-        const userId = deleteUser[i].getElementsByTagName("input")[0].value;
+        const userId = document.getElementById("userId"+i).value;
         event.preventDefault();
         fetch(`http://localhost:8080/admin/deleteUser?userId=${userId}`, {
           method: "POST",
