@@ -171,7 +171,9 @@
             </td>
     
             <td>
-                <input type="text" value=${user.id} id="userId${user.id}" hidden/>
+                <input type="text" value=${user.id} id="userId${
+        user.id
+      }" hidden/>
                 <button class="btn btn-danger deleteUser">
                   Delete
                 </button>
@@ -180,6 +182,8 @@
 
       allUsersTableBody.appendChild(row);
     });
+
+    addEventHandlers();
   }
 
   function addRolesInUserAddForm(roles) {
@@ -191,9 +195,9 @@
   function addEventHandlers() {
     const deleteUser = document.getElementsByClassName("deleteUser");
 
-    for (i = 0; i < deleteUser.length; i++) {
-      deleteUser[i].addEventListener("click", (event) => {
-        const userId = document.getElementById("userId"+i).value;
+    for (i = 1; i <= deleteUser.length; i++) {
+      const userId = document.getElementById("userId" + i).value;
+      deleteUser[i - 1].addEventListener("click", (event) => {
         event.preventDefault();
         fetch(`http://localhost:8080/admin/deleteUser?userId=${userId}`, {
           method: "POST",
@@ -202,18 +206,13 @@
           .then((data) => addUsersInTable(data))
           .catch((err) => console.log(err));
       });
+
     }
 
     // обновление)
     const updateUser = document.getElementsByClassName("updateUser");
 
-    const getRoles = (selectedRoles) => {
-      let rls = [];
-      for (j = 0; j < selectedRoles.length; j++) {
-        rls.push(selectedRoles[j].value);
-      }
-      return rls;
-    };
+    
 
     for (let i = 0; i < updateUser.length; i++) {
       updateUser[i].addEventListener("submit", (event) => {
@@ -244,36 +243,48 @@
           .catch((err) => console.log(err));
       });
     }
-
-    const addUser = document.getElementById("addUser");
-
-    addUser.addEventListener("submit", (event) => {
-      event.preventDefault();
-
-      const selectedRoles = document.getElementById("editRoles");
-
-      const newUser = {
-        username: document.getElementById("newUsername").value,
-        age: document.getElementById("newAge").value,
-        email: document.getElementById("newEmail").value,
-        password: document.getElementById("newPassword").value,
-        roles: getRoles(selectedRoles),
-      };
-
-      fetch(`http://localhost:8080/admin/saveUser`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newUser),
-      })
-        .then((resp) => resp.json())
-        .then((data) => addUsersInTable(data))
-        .catch((err) => console.log(err));
-    });
   }
 
+  const getRoles = (selectedRoles) => {
+    let rls = [];
+    for (j = 0; j < selectedRoles.length; j++) {
+      
+      rls.push(selectedRoles[j].value);
+    }
+    return rls;
+  };
+
+  const addUser = document.getElementById("addUser");
+
+  addUser.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const selectedRoles = document.getElementById("editRoles").selectedOptions;
+
+    const newUser = {
+      username: document.getElementById("newUsername").value,
+      age: document.getElementById("newAge").value,
+      email: document.getElementById("newEmail").value,
+      password: document.getElementById("newPassword").value,
+      roles: getRoles(selectedRoles),
+    };
+
+    fetch(`http://localhost:8080/admin/saveUser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data)
+        addUsersInTable(data)})
+      .catch((err) => console.log(err));
+
+    addUser.reset();
+  });
+  
   addUsersInTable(allUsers);
   addRolesInUserAddForm(allRoles);
-  addEventHandlers();
 })();
